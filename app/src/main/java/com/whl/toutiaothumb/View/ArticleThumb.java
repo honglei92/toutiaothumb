@@ -19,8 +19,6 @@ import androidx.annotation.Nullable;
 
 import com.whl.toutiaothumb.R;
 
-import java.util.Random;
-
 /**
  * author  honglei92
  * date    2021/1/9
@@ -28,10 +26,6 @@ import java.util.Random;
 public class ArticleThumb extends View implements View.OnClickListener {
     private static final String TAG = "ArticleThumb";
     private Bitmap mThumbImage;
-    private Bitmap mThumbImage1;
-    private Bitmap mThumbImage2;
-    private Bitmap mThumbImage3;
-    private Bitmap mThumbImage4;
     private Paint mBitmapPaint;
     private int offsetX = 10;
     private int offsetY = 10;
@@ -54,6 +48,16 @@ public class ArticleThumb extends View implements View.OnClickListener {
 
     private float emoji1x;
     private float emoji1y;
+
+    public int getEmojiType() {
+        return emojiType;
+    }
+
+    public void setEmojiType(int emojiType) {
+        this.emojiType = emojiType;
+        init();
+    }
+
     private int emojiType;
 
     public ArticleThumb(Context context) {
@@ -66,7 +70,6 @@ public class ArticleThumb extends View implements View.OnClickListener {
 
     public ArticleThumb(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
     private void init() {
@@ -75,26 +78,25 @@ public class ArticleThumb extends View implements View.OnClickListener {
         mBitmapPaint = new Paint();
         mBitmapPaint.setAntiAlias(true);
         //初始化图片
-        emojiType = 0;
         switch (emojiType) {
             case 1:
-                mThumbImage1 = BitmapFactory.decodeResource(getResources(), R.drawable.emoji2);
-                break;
-            case 2:
-                mThumbImage2 = BitmapFactory.decodeResource(getResources(), R.drawable.emoji3);
-                break;
-            case 3:
-                mThumbImage3 = BitmapFactory.decodeResource(getResources(), R.drawable.emoji4);
-                break;
-            case 4:
-                mThumbImage4 = BitmapFactory.decodeResource(getResources(), R.drawable.emoji5);
-                break;
-            default:
                 BitmapFactory.Options opt = new BitmapFactory.Options();
                 opt.inScaled = true;
                 opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                mThumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.emoji1, opt).copy(Bitmap.Config.ARGB_8888, true);
+                mThumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.emoji2, opt).copy(Bitmap.Config.ARGB_8888, true);
                 mThumbImage.setDensity(getResources().getDisplayMetrics().densityDpi);
+                break;
+            case 2:
+                mThumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.emoji3);
+                break;
+            case 3:
+                mThumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.emoji4);
+                break;
+            case 4:
+                mThumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.emoji5);
+                break;
+            default:
+                mThumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.emoji1);
         }
 
         setOnClickListener(this);
@@ -112,7 +114,7 @@ public class ArticleThumb extends View implements View.OnClickListener {
         Log.i(TAG, "点击了");
     }
 
-    private void showThumbDownAni() {
+    private void showThumbDownAni(ArticleRl articleThumbRl) {
         boolean isX = ((int) (Math.random() * 100) % 2 == 0);
         Log.i(TAG, "showThumbDownAni " + isX + ":" + Math.random() * 10 % 2);
         //获取起点坐标
@@ -126,20 +128,43 @@ public class ArticleThumb extends View implements View.OnClickListener {
         int x2 = location[0];
         int y2 = location[1];
 
-        //抛物线动画
+        //抛物线动画 x方向
         ObjectAnimator translateAnimationX = ObjectAnimator.ofFloat(this, "translationX", 0,
                 isX ? -1180 : (float) (-1080 * Math.random()));
         translateAnimationX.setDuration(800);
         translateAnimationX.setInterpolator(new AccelerateInterpolator());
+        //y方向
         ObjectAnimator translateAnimationY = ObjectAnimator.ofFloat(this, "translationY", 0,
-                isX ? (float) (-700 * Math.random()) : (float) (-700));
+                isX ? (float) (-900 * Math.random()) : (float) (-900));
         translateAnimationY.setDuration(800);
         translateAnimationY.setInterpolator(new LinearInterpolator());
-
-
+        ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(this, "alpha", 1f, 1f, 1f, 1f, 1f, 1f, 1f, 0f);
+        alphaAnimation.setDuration(800);
+        //动画集合
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.play(translateAnimationX).with(translateAnimationY);
+        animatorSet.play(translateAnimationX).with(translateAnimationY).with(alphaAnimation);
         animatorSet.start();
+        animatorSet.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                setVisibility(GONE);
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
 
     }
 
@@ -172,26 +197,10 @@ public class ArticleThumb extends View implements View.OnClickListener {
 
 
     private void drawThumbImage(Canvas canvas) {
-        switch (emojiType) {
-            case 1:
-                canvas.drawBitmap(mThumbImage1, 0, 0, mBitmapPaint);
-                break;
-            case 2:
-                canvas.drawBitmap(mThumbImage2, 0, 0, mBitmapPaint);
-                break;
-            case 3:
-                canvas.drawBitmap(mThumbImage3, 0, 0, mBitmapPaint);
-                break;
-            case 4:
-                canvas.drawBitmap(mThumbImage4, 0, 0, mBitmapPaint);
-                break;
-            default:
-                canvas.drawBitmap(mThumbImage, 0, 0, mBitmapPaint);
-
-        }
+        canvas.drawBitmap(mThumbImage, 0, 0, mBitmapPaint);
     }
 
-    public void setThumb(boolean isThumb) {
-        showThumbDownAni();
+    public void setThumb(boolean isThumb, ArticleRl articleThumbRl) {
+        showThumbDownAni(articleThumbRl);
     }
 }

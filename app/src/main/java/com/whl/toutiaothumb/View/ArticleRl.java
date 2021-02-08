@@ -1,14 +1,12 @@
 package com.whl.toutiaothumb.View;
 
 import android.content.Context;
-import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,10 +34,10 @@ public class ArticleRl extends RelativeLayout {
     }
 
     private void init(Context context) {
-        addThumbImage(context);
+//        addThumbImage(context, x, y);
     }
 
-    private void addThumbImage(Context context) {
+    private void addThumbImage(Context context, float x, float y) {
         List<Integer> list = new ArrayList<>();
         for (int i = 0; i < 5; i++) {
             list.add(i);
@@ -47,24 +45,16 @@ public class ArticleRl extends RelativeLayout {
         Collections.shuffle(list);
         for (int i = 0; i < 5; i++) {
             LayoutParams layoutParams = new LayoutParams(100, 100);
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-            switch (list.get(i)) {
-                case 1:
-                    this.addView(new ArticleThumb1(context), layoutParams);
-                    break;
-                case 2:
-                    this.addView(new ArticleThumb2(context), layoutParams);
-                    break;
-                case 3:
-                    this.addView(new ArticleThumb3(context), layoutParams);
-                    break;
-                case 4:
-                    this.addView(new ArticleThumb4(context), layoutParams);
-                    break;
-                default:
-                    this.addView(new ArticleThumb(context), layoutParams);
-            }
+//            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+//            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+            int screenWidth = metrics.widthPixels;
+            int screenHeight = metrics.heightPixels;
+
+            layoutParams.setMargins((int) x, (int) y, 0, 0);
+            ArticleThumb articleThumb = new ArticleThumb(context);
+            articleThumb.setEmojiType(list.get(i));
+            this.addView(articleThumb, layoutParams);
         }
     }
 
@@ -72,37 +62,25 @@ public class ArticleRl extends RelativeLayout {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setThumb(boolean isThumb) {
+    public void setThumb(boolean isThumb, float x, float y, ArticleRl articleThumbRl) {
         if (System.currentTimeMillis() - lastClickTime > 800) {
+//            if (getChildCount() < 5) {
+                addThumbImage(mContext, x, y);
+//            }
             lastClickTime = System.currentTimeMillis();
-            for (int i = 0; i < 5; i++) {
+            for (int i = getChildCount() - 5; i < getChildCount(); i++) {
                 if (getChildAt(i) instanceof ArticleThumb)
-                    ((ArticleThumb) getChildAt(i)).setThumb(true);
-                else if (getChildAt(i) instanceof ArticleThumb1)
-                    ((ArticleThumb1) getChildAt(i)).setThumb(true);
-                else if (getChildAt(i) instanceof ArticleThumb2)
-                    ((ArticleThumb2) getChildAt(i)).setThumb(true);
-                else if (getChildAt(i) instanceof ArticleThumb3)
-                    ((ArticleThumb3) getChildAt(i)).setThumb(true);
-                else if (getChildAt(i) instanceof ArticleThumb4)
-                    ((ArticleThumb4) getChildAt(i)).setThumb(true);
+                    ((ArticleThumb) getChildAt(i)).setThumb(true, articleThumbRl);
             }
         } else {
             Log.i(TAG, "当前动画化正在执行");
-            addThumbImage(mContext);
+//            if (getChildCount() < 5) {
+                addThumbImage(mContext, x, y);
+//            }
             for (int i = getChildCount() - 5; i < getChildCount(); i++) {
                 if (getChildAt(i) instanceof ArticleThumb)
-                    ((ArticleThumb) getChildAt(i)).setThumb(true);
-                else if (getChildAt(i) instanceof ArticleThumb1)
-                    ((ArticleThumb1) getChildAt(i)).setThumb(true);
-                else if (getChildAt(i) instanceof ArticleThumb2)
-                    ((ArticleThumb2) getChildAt(i)).setThumb(true);
-                else if (getChildAt(i) instanceof ArticleThumb3)
-                    ((ArticleThumb3) getChildAt(i)).setThumb(true);
-                else if (getChildAt(i) instanceof ArticleThumb4)
-                    ((ArticleThumb4) getChildAt(i)).setThumb(true);
+                    ((ArticleThumb) getChildAt(i)).setThumb(true, articleThumbRl);
             }
-
         }
     }
 }

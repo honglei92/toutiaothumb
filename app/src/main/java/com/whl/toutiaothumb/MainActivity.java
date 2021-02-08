@@ -1,24 +1,17 @@
 package com.whl.toutiaothumb;
 
-import android.media.Image;
 import android.os.Bundle;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-import com.whl.toutiaothumb.View.ArticleRl;
-import com.whl.toutiaothumb.View.ArticleThumb;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
-
-import android.view.View;
-
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.whl.toutiaothumb.View.ArticleRl;
+
 public class MainActivity extends AppCompatActivity {
-    private ImageView ivThumb;
+    private ImageView ivThumb, ivThumbBottom;
     private ArticleRl articleThumbRl;
 
     @Override
@@ -26,12 +19,28 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ivThumb = findViewById(R.id.ivThumb);
+        ivThumbBottom = findViewById(R.id.ivThumbBottom);
         articleThumbRl = findViewById(R.id.articleThumbRl);
         ivThumb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int[] location = new int[2];
+                v.getLocationInWindow(location);
+                int x = location[0]; // view距离window 左边的距离（即x轴方向）
+                int y = location[1]; // view距离window 顶边的距离（即y轴方向）
                 articleThumbRl.setVisibility(View.VISIBLE);
-                articleThumbRl.setThumb(true);
+                articleThumbRl.setThumb(true, x, y,articleThumbRl);
+            }
+        });
+        ivThumbBottom.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int[] location = new int[2];
+                v.getLocationInWindow(location);
+                int x = location[0]; // view距离window 左边的距离（即x轴方向）
+                int y = location[1]; // view距离window 顶边的距离（即y轴方向）
+                articleThumbRl.setVisibility(View.VISIBLE);
+                articleThumbRl.setThumb(true, x, y, articleThumbRl);
             }
         });
     }
