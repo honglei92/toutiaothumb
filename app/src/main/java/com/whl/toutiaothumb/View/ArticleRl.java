@@ -42,7 +42,7 @@ public class ArticleRl extends RelativeLayout {
         for (int i = 0; i < 5; i++) {
             list.add(i);
         }
-        Collections.shuffle(list);
+        Collections.shuffle(list);//打乱顺序
         for (int i = 0; i < 5; i++) {
             LayoutParams layoutParams = new LayoutParams(100, 100);
 //            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
@@ -65,7 +65,7 @@ public class ArticleRl extends RelativeLayout {
     public void setThumb(boolean isThumb, float x, float y, ArticleRl articleThumbRl) {
         if (System.currentTimeMillis() - lastClickTime > 800) {
 //            if (getChildCount() < 5) {
-                addThumbImage(mContext, x, y);
+            addThumbImage(mContext, x, y);
 //            }
             lastClickTime = System.currentTimeMillis();
             for (int i = getChildCount() - 5; i < getChildCount(); i++) {
@@ -75,7 +75,7 @@ public class ArticleRl extends RelativeLayout {
         } else {
             Log.i(TAG, "当前动画化正在执行");
 //            if (getChildCount() < 5) {
-                addThumbImage(mContext, x, y);
+            addThumbImage(mContext, x, y);
 //            }
             for (int i = getChildCount() - 5; i < getChildCount(); i++) {
                 if (getChildAt(i) instanceof ArticleThumb)
