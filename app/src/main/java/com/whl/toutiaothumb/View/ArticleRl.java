@@ -2,6 +2,7 @@ package com.whl.toutiaothumb.View;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -13,6 +14,7 @@ import com.whl.toutiaothumb.R;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.logging.LogRecord;
 
 /**
  * author  honglei92
@@ -62,7 +64,7 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
             ThumbEmoji articleThumb = new ThumbEmoji(context);
             articleThumb.setEmojiType(list.get(i));
             articleThumb.setmAnimatorListener(animatorListener);
-            this.addView(articleThumb,-1, layoutParams);
+            this.addView(articleThumb, -1, layoutParams);
         }
     }
 
@@ -100,9 +102,9 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
             }
             currentNumber++;
             //添加数字连击view
-            LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-            layoutParams.setMargins((int) (x), (int) (y) - 300, 0, 150);
+            layoutParams.setMargins(600, (int) (y) - 300, 0, 150);
             if (thumbNumber == null) {
                 thumbNumber = new ThumbNumber(mContext);
                 addView(thumbNumber, layoutParams);//第二个参数 让数字连击始终保持在最上层
@@ -113,9 +115,15 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
 
     @Override
     public void onAnimationEmojiEnd() {
-        if (thumbNumber != null) {
-            removeView(thumbNumber);
-            thumbNumber = null;
-        }
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (thumbNumber != null && System.currentTimeMillis() - lastClickTime > 800) {
+                    removeView(thumbNumber);
+                    thumbNumber = null;
+                }
+            }
+        }, 1000);
     }
 }
