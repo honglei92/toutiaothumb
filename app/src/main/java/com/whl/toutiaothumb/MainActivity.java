@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
                 int x = location[0]; // view距离window 左边的距离（即x轴方向）
                 int y = location[1]; // view距离window 顶边的距离（即y轴方向）
                 articleThumbRl.setVisibility(View.VISIBLE);
-                articleThumbRl.setThumb(true, x, y,articleThumbRl);
+                articleThumbRl.setThumb(true, x, y, articleThumbRl);
             }
         });
         ivThumbBottom.setOnClickListener(new View.OnClickListener() {

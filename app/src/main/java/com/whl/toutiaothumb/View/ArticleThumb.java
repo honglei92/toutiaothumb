@@ -9,6 +9,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.media.MediaPlayer;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -31,6 +32,7 @@ public class ArticleThumb extends View implements View.OnClickListener {
     private Paint mBitmapPaint;
     private int offsetX = 10;
     private int offsetY = 10;
+    private int duration = 600;
 
     public float getEmoji1x() {
         return emoji1x;
@@ -50,6 +52,7 @@ public class ArticleThumb extends View implements View.OnClickListener {
 
     private float emoji1x;
     private float emoji1y;
+    private Context mContext;
 
     public int getEmojiType() {
         return emojiType;
@@ -64,6 +67,7 @@ public class ArticleThumb extends View implements View.OnClickListener {
 
     public ArticleThumb(Context context) {
         this(context, null);
+        mContext = context;
     }
 
     public ArticleThumb(Context context, @Nullable AttributeSet attrs) {
@@ -136,30 +140,33 @@ public class ArticleThumb extends View implements View.OnClickListener {
         //抛物线动画 x方向
         ObjectAnimator translateAnimationX = ObjectAnimator.ofFloat(this, "translationX",
                 0, topX);
-        translateAnimationX.setDuration(800);
+        translateAnimationX.setDuration(duration);
         translateAnimationX.setInterpolator(new LinearInterpolator());
         //y方向
         ObjectAnimator translateAnimationY = ObjectAnimator.ofFloat(this, "translationY",
                 0, topY);
-        translateAnimationY.setDuration(800);
+        translateAnimationY.setDuration(duration);
         translateAnimationY.setInterpolator(new DecelerateInterpolator());
         //动画集合
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(translateAnimationX).with(translateAnimationY);
-        animatorSet.start();
+
         //下降动画
         //抛物线动画，原理：两个位移动画，一个横向匀速移动，一个纵向变速移动，两个动画同时执行，就有了抛物线的效果。
         ObjectAnimator translateAnimationXDown = ObjectAnimator.ofFloat(this, "translationX", topX, topX * 1.2f);
-        translateAnimationXDown.setDuration(160);
+        translateAnimationXDown.setDuration(duration / 5);
         translateAnimationXDown.setInterpolator(new LinearInterpolator());
 
         ObjectAnimator translateAnimationYDown = ObjectAnimator.ofFloat(this, "translationY", topY, topY * 0.8f);
-        translateAnimationYDown.setDuration(160);
+        translateAnimationYDown.setDuration(duration / 5);
         translateAnimationYDown.setInterpolator(new AccelerateInterpolator());
         //透明度
         ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(this, "alpha", 1f, 1f, 1f, 1f, 1f, 1f, 1f, 0f);
-        alphaAnimation.setDuration(160);
+        alphaAnimation.setDuration(duration / 5);
         AnimatorSet animatorSetDown = new AnimatorSet();//设置动画播放顺序
+        //播放上升动画
+        animatorSet.start();
+//        mMediaPlayer.start();
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -191,6 +198,27 @@ public class ArticleThumb extends View implements View.OnClickListener {
 
                     }
                 });
+            }
+
+            @Override
+            public void onAnimationCancel(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationRepeat(Animator animation) {
+
+            }
+        });
+        animatorSetDown.addListener(new Animator.AnimatorListener() {
+            @Override
+            public void onAnimationStart(Animator animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                articleThumbRl.removeView(ArticleThumb.this);
             }
 
             @Override

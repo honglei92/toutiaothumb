@@ -1,10 +1,13 @@
 package com.whl.toutiaothumb.View;
 
 import android.content.Context;
+import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.RelativeLayout;
+
+import com.whl.toutiaothumb.R;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,6 +21,8 @@ public class ArticleRl extends RelativeLayout {
     private static final String TAG = "ArticleThumb";
     private long lastClickTime;
     private Context mContext;
+    private MediaPlayer mMediaPlayer;
+
 
     public ArticleRl(Context context) {
         this(context, null);
@@ -34,6 +39,7 @@ public class ArticleRl extends RelativeLayout {
     }
 
     private void init(Context context) {
+        mMediaPlayer = MediaPlayer.create(context, R.raw.thumb);
 //        addThumbImage(context, x, y);
     }
 
@@ -63,14 +69,20 @@ public class ArticleRl extends RelativeLayout {
     }
 
     public void setThumb(boolean isThumb, float x, float y, ArticleRl articleThumbRl) {
+        if (mMediaPlayer.isPlaying()) {
+            mMediaPlayer.seekTo(0);
+        } else {
+            mMediaPlayer.start();
+        }
         if (System.currentTimeMillis() - lastClickTime > 800) {
 //            if (getChildCount() < 5) {
             addThumbImage(mContext, x, y);
 //            }
             lastClickTime = System.currentTimeMillis();
             for (int i = getChildCount() - 5; i < getChildCount(); i++) {
-                if (getChildAt(i) instanceof ArticleThumb)
+                if (getChildAt(i) instanceof ArticleThumb) {
                     ((ArticleThumb) getChildAt(i)).setThumb(true, articleThumbRl);
+                }
             }
         } else {
             Log.i(TAG, "当前动画化正在执行");
@@ -78,8 +90,9 @@ public class ArticleRl extends RelativeLayout {
             addThumbImage(mContext, x, y);
 //            }
             for (int i = getChildCount() - 5; i < getChildCount(); i++) {
-                if (getChildAt(i) instanceof ArticleThumb)
+                if (getChildAt(i) instanceof ArticleThumb) {
                     ((ArticleThumb) getChildAt(i)).setThumb(true, articleThumbRl);
+                }
             }
         }
     }
