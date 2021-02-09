@@ -5,6 +5,7 @@ import android.media.MediaPlayer;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 
 import com.whl.toutiaothumb.R;
@@ -22,6 +23,8 @@ public class ArticleRl extends RelativeLayout {
     private long lastClickTime;
     private Context mContext;
     private MediaPlayer mMediaPlayer;
+    private int currentNumber;
+    private ThumbNumber thumbNumber;
 
 
     public ArticleRl(Context context) {
@@ -45,20 +48,18 @@ public class ArticleRl extends RelativeLayout {
 
     private void addThumbImage(Context context, float x, float y) {
         List<Integer> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 8; i++) {
             list.add(i);
         }
         Collections.shuffle(list);//打乱顺序
         for (int i = 0; i < 5; i++) {
             LayoutParams layoutParams = new LayoutParams(100, 100);
-//            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-//            layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
             DisplayMetrics metrics = context.getResources().getDisplayMetrics();
             int screenWidth = metrics.widthPixels;
             int screenHeight = metrics.heightPixels;
 
             layoutParams.setMargins((int) x, (int) y, 0, 0);
-            ArticleThumb articleThumb = new ArticleThumb(context);
+            ThumbEmoji articleThumb = new ThumbEmoji(context);
             articleThumb.setEmojiType(list.get(i));
             this.addView(articleThumb, layoutParams);
         }
@@ -75,25 +76,37 @@ public class ArticleRl extends RelativeLayout {
             mMediaPlayer.start();
         }
         if (System.currentTimeMillis() - lastClickTime > 800) {
-//            if (getChildCount() < 5) {
             addThumbImage(mContext, x, y);
-//            }
             lastClickTime = System.currentTimeMillis();
             for (int i = getChildCount() - 5; i < getChildCount(); i++) {
-                if (getChildAt(i) instanceof ArticleThumb) {
-                    ((ArticleThumb) getChildAt(i)).setThumb(true, articleThumbRl);
+                if (getChildAt(i) instanceof ThumbEmoji) {
+                    ((ThumbEmoji) getChildAt(i)).setThumb(true, articleThumbRl);
                 }
+            }
+            currentNumber = 0;
+            if (thumbNumber != null) {
+                removeView(thumbNumber);
+                thumbNumber = null;
             }
         } else {
+            lastClickTime = System.currentTimeMillis();
             Log.i(TAG, "当前动画化正在执行");
-//            if (getChildCount() < 5) {
             addThumbImage(mContext, x, y);
-//            }
             for (int i = getChildCount() - 5; i < getChildCount(); i++) {
-                if (getChildAt(i) instanceof ArticleThumb) {
-                    ((ArticleThumb) getChildAt(i)).setThumb(true, articleThumbRl);
+                if (getChildAt(i) instanceof ThumbEmoji) {
+                    ((ThumbEmoji) getChildAt(i)).setThumb(true, articleThumbRl);
                 }
             }
+            currentNumber++;
+            //添加数字连击view
+            LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
+            layoutParams.setMargins((int) (x), (int) (y) - 300, 0, 150);
+            if (thumbNumber == null) {
+                thumbNumber = new ThumbNumber(mContext);
+                addView(thumbNumber, layoutParams);
+            }
+            thumbNumber.setNumber(currentNumber);
         }
     }
 }

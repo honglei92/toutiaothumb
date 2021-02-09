@@ -9,7 +9,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.media.MediaPlayer;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -26,33 +25,15 @@ import com.whl.toutiaothumb.R;
  * author  honglei92
  * date    2021/1/9
  */
-public class ArticleThumb extends View implements View.OnClickListener {
+public class ThumbEmoji extends View implements View.OnClickListener {
     private static final String TAG = "ArticleThumb";
     private Bitmap mThumbImage;
     private Paint mBitmapPaint;
-    private int offsetX = 10;
-    private int offsetY = 10;
     private int duration = 600;
-
-    public float getEmoji1x() {
-        return emoji1x;
-    }
-
-    public void setEmoji1x(float emoji1x) {
-        this.emoji1x = emoji1x;
-    }
-
-    public float getEmoji1y() {
-        return emoji1y;
-    }
-
-    public void setEmoji1y(float emoji1y) {
-        this.emoji1y = emoji1y;
-    }
-
-    private float emoji1x;
-    private float emoji1y;
     private Context mContext;
+    private int emojiType;
+    private int[] emojiArray = {R.drawable.emoji1, R.drawable.emoji2, R.drawable.emoji3, R.drawable.emoji4,
+            R.drawable.emoji5, R.drawable.emoji6, R.drawable.emoji7, R.drawable.emoji8};
 
     public int getEmojiType() {
         return emojiType;
@@ -63,19 +44,22 @@ public class ArticleThumb extends View implements View.OnClickListener {
         init();
     }
 
-    private int emojiType;
 
-    public ArticleThumb(Context context) {
+    public ThumbEmoji(Context context) {
         this(context, null);
         mContext = context;
     }
 
-    public ArticleThumb(Context context, @Nullable AttributeSet attrs) {
+    public ThumbEmoji(Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public ArticleThumb(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public ThumbEmoji(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    public ThumbEmoji(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     private void init() {
@@ -84,35 +68,15 @@ public class ArticleThumb extends View implements View.OnClickListener {
         mBitmapPaint = new Paint();
         mBitmapPaint.setAntiAlias(true);
         //初始化图片
-        switch (emojiType) {
-            case 1:
-                BitmapFactory.Options opt = new BitmapFactory.Options();
-                opt.inScaled = true;
-                opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
-                mThumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.emoji2, opt).copy(Bitmap.Config.ARGB_8888, true);
-                mThumbImage.setDensity(getResources().getDisplayMetrics().densityDpi);
-                break;
-            case 2:
-                mThumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.emoji3);
-                break;
-            case 3:
-                mThumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.emoji4);
-                break;
-            case 4:
-                mThumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.emoji5);
-                break;
-            default:
-                mThumbImage = BitmapFactory.decodeResource(getResources(), R.drawable.emoji1);
-        }
-
+        BitmapFactory.Options opt = new BitmapFactory.Options();
+        opt.inScaled = true;
+        opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        mThumbImage = BitmapFactory.decodeResource(getResources(), emojiArray[emojiType], opt).copy(Bitmap.Config.ARGB_8888, true);
+        mThumbImage.setDensity(getResources().getDisplayMetrics().densityDpi);
         setOnClickListener(this);
     }
 
     private void initSize() {
-    }
-
-    public ArticleThumb(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override
@@ -166,7 +130,6 @@ public class ArticleThumb extends View implements View.OnClickListener {
         AnimatorSet animatorSetDown = new AnimatorSet();//设置动画播放顺序
         //播放上升动画
         animatorSet.start();
-//        mMediaPlayer.start();
         animatorSet.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -177,27 +140,6 @@ public class ArticleThumb extends View implements View.OnClickListener {
             public void onAnimationEnd(Animator animation) {
                 animatorSetDown.play(translateAnimationXDown).with(translateAnimationYDown).with(alphaAnimation);
                 animatorSetDown.start();
-                animatorSetDown.addListener(new Animator.AnimatorListener() {
-                    @Override
-                    public void onAnimationStart(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationCancel(Animator animation) {
-
-                    }
-
-                    @Override
-                    public void onAnimationRepeat(Animator animation) {
-
-                    }
-                });
             }
 
             @Override
@@ -218,7 +160,7 @@ public class ArticleThumb extends View implements View.OnClickListener {
 
             @Override
             public void onAnimationEnd(Animator animation) {
-                articleThumbRl.removeView(ArticleThumb.this);
+                articleThumbRl.removeView(ThumbEmoji.this);
             }
 
             @Override
@@ -235,7 +177,8 @@ public class ArticleThumb extends View implements View.OnClickListener {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        setMeasuredDimension(100, 100);//该方法进行宽高设置
     }
 
     @Override
