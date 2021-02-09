@@ -27,13 +27,14 @@ import com.whl.toutiaothumb.R;
  */
 public class ThumbEmoji extends View implements View.OnClickListener {
     private static final String TAG = "ArticleThumb";
+    public static final int DURATION = 600;
+    public static final int[] emojiArray = {R.drawable.emoji1, R.drawable.emoji2, R.drawable.emoji3, R.drawable.emoji4,
+            R.drawable.emoji5, R.drawable.emoji6, R.drawable.emoji7, R.drawable.emoji8};
     private Bitmap mThumbImage;
     private Paint mBitmapPaint;
-    private int duration = 600;
     private Context mContext;
     private int emojiType;
-    private int[] emojiArray = {R.drawable.emoji1, R.drawable.emoji2, R.drawable.emoji3, R.drawable.emoji4,
-            R.drawable.emoji5, R.drawable.emoji6, R.drawable.emoji7, R.drawable.emoji8};
+    private AnimatorListener mAnimatorListener;
 
     public int getEmojiType() {
         return emojiType;
@@ -43,7 +44,6 @@ public class ThumbEmoji extends View implements View.OnClickListener {
         this.emojiType = emojiType;
         init();
     }
-
 
     public ThumbEmoji(Context context) {
         this(context, null);
@@ -85,31 +85,18 @@ public class ThumbEmoji extends View implements View.OnClickListener {
     }
 
     private void showThumbDownAni(ArticleRl articleThumbRl) {
-        boolean isX = ((int) (Math.random() * 100) % 2 == 0);
-        Log.i(TAG, "showThumbDownAni " + isX + ":" + Math.random() * 10 % 2);
-        //获取起点坐标
-        int[] location2 = new int[2];
-        getLocationInWindow(location2);
-        int x1 = location2[0];
-        int y1 = location2[1];
-        //获取终点坐标，最近拍摄的坐标
-        int[] location = new int[2];
-        getLocationInWindow(location);
-        int x2 = location[0];
-        int y2 = location[1];
-
         float topX = -(1080 - 200) + (float) ((2160 - 400) * Math.random());
-        float topY = -300 + (float) (-500 * Math.random());
+        float topY = -300 + (float) (-700 * Math.random());
         //上升动画
         //抛物线动画 x方向
         ObjectAnimator translateAnimationX = ObjectAnimator.ofFloat(this, "translationX",
                 0, topX);
-        translateAnimationX.setDuration(duration);
+        translateAnimationX.setDuration(DURATION);
         translateAnimationX.setInterpolator(new LinearInterpolator());
         //y方向
         ObjectAnimator translateAnimationY = ObjectAnimator.ofFloat(this, "translationY",
                 0, topY);
-        translateAnimationY.setDuration(duration);
+        translateAnimationY.setDuration(DURATION);
         translateAnimationY.setInterpolator(new DecelerateInterpolator());
         //动画集合
         AnimatorSet animatorSet = new AnimatorSet();
@@ -118,15 +105,15 @@ public class ThumbEmoji extends View implements View.OnClickListener {
         //下降动画
         //抛物线动画，原理：两个位移动画，一个横向匀速移动，一个纵向变速移动，两个动画同时执行，就有了抛物线的效果。
         ObjectAnimator translateAnimationXDown = ObjectAnimator.ofFloat(this, "translationX", topX, topX * 1.2f);
-        translateAnimationXDown.setDuration(duration / 5);
+        translateAnimationXDown.setDuration(DURATION / 5);
         translateAnimationXDown.setInterpolator(new LinearInterpolator());
 
         ObjectAnimator translateAnimationYDown = ObjectAnimator.ofFloat(this, "translationY", topY, topY * 0.8f);
-        translateAnimationYDown.setDuration(duration / 5);
+        translateAnimationYDown.setDuration(DURATION / 5);
         translateAnimationYDown.setInterpolator(new AccelerateInterpolator());
         //透明度
         ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(this, "alpha", 1f, 1f, 1f, 1f, 1f, 1f, 1f, 0f);
-        alphaAnimation.setDuration(duration / 5);
+        alphaAnimation.setDuration(DURATION / 5);
         AnimatorSet animatorSetDown = new AnimatorSet();//设置动画播放顺序
         //播放上升动画
         animatorSet.start();
@@ -161,6 +148,7 @@ public class ThumbEmoji extends View implements View.OnClickListener {
             @Override
             public void onAnimationEnd(Animator animation) {
                 articleThumbRl.removeView(ThumbEmoji.this);
+                mAnimatorListener.onAnimationEmojiEnd();
             }
 
             @Override
@@ -177,7 +165,6 @@ public class ThumbEmoji extends View implements View.OnClickListener {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         setMeasuredDimension(100, 100);//该方法进行宽高设置
     }
 
@@ -215,5 +202,13 @@ public class ThumbEmoji extends View implements View.OnClickListener {
 
     public void setThumb(boolean isThumb, ArticleRl articleThumbRl) {
         showThumbDownAni(articleThumbRl);
+    }
+
+    public void setmAnimatorListener(AnimatorListener animatorListener) {
+        this.mAnimatorListener = animatorListener;
+    }
+
+    public interface AnimatorListener {
+        void onAnimationEmojiEnd();
     }
 }

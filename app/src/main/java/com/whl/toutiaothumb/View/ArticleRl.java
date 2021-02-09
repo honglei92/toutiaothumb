@@ -18,7 +18,7 @@ import java.util.List;
  * author  honglei92
  * date    2021/1/9
  */
-public class ArticleRl extends RelativeLayout {
+public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorListener {
     private static final String TAG = "ArticleThumb";
     private long lastClickTime;
     private Context mContext;
@@ -43,10 +43,9 @@ public class ArticleRl extends RelativeLayout {
 
     private void init(Context context) {
         mMediaPlayer = MediaPlayer.create(context, R.raw.thumb);
-//        addThumbImage(context, x, y);
     }
 
-    private void addThumbImage(Context context, float x, float y) {
+    private void addThumbImage(Context context, float x, float y, ThumbEmoji.AnimatorListener animatorListener) {
         List<Integer> list = new ArrayList<>();
         for (int i = 0; i < 8; i++) {
             list.add(i);
@@ -54,6 +53,7 @@ public class ArticleRl extends RelativeLayout {
         Collections.shuffle(list);//打乱顺序
         for (int i = 0; i < 5; i++) {
             LayoutParams layoutParams = new LayoutParams(100, 100);
+            //获取屏幕尺寸
             DisplayMetrics metrics = context.getResources().getDisplayMetrics();
             int screenWidth = metrics.widthPixels;
             int screenHeight = metrics.heightPixels;
@@ -61,7 +61,8 @@ public class ArticleRl extends RelativeLayout {
             layoutParams.setMargins((int) x, (int) y, 0, 0);
             ThumbEmoji articleThumb = new ThumbEmoji(context);
             articleThumb.setEmojiType(list.get(i));
-            this.addView(articleThumb, layoutParams);
+            articleThumb.setmAnimatorListener(animatorListener);
+            this.addView(articleThumb,-1, layoutParams);
         }
     }
 
@@ -71,12 +72,12 @@ public class ArticleRl extends RelativeLayout {
 
     public void setThumb(boolean isThumb, float x, float y, ArticleRl articleThumbRl) {
         if (mMediaPlayer.isPlaying()) {
-            mMediaPlayer.seekTo(0);
+            mMediaPlayer.seekTo(0);//重复点击时，从头开始播放
         } else {
             mMediaPlayer.start();
         }
         if (System.currentTimeMillis() - lastClickTime > 800) {
-            addThumbImage(mContext, x, y);
+            addThumbImage(mContext, x, y, this);
             lastClickTime = System.currentTimeMillis();
             for (int i = getChildCount() - 5; i < getChildCount(); i++) {
                 if (getChildAt(i) instanceof ThumbEmoji) {
@@ -91,7 +92,7 @@ public class ArticleRl extends RelativeLayout {
         } else {
             lastClickTime = System.currentTimeMillis();
             Log.i(TAG, "当前动画化正在执行");
-            addThumbImage(mContext, x, y);
+            addThumbImage(mContext, x, y, this);
             for (int i = getChildCount() - 5; i < getChildCount(); i++) {
                 if (getChildAt(i) instanceof ThumbEmoji) {
                     ((ThumbEmoji) getChildAt(i)).setThumb(true, articleThumbRl);
@@ -104,9 +105,17 @@ public class ArticleRl extends RelativeLayout {
             layoutParams.setMargins((int) (x), (int) (y) - 300, 0, 150);
             if (thumbNumber == null) {
                 thumbNumber = new ThumbNumber(mContext);
-                addView(thumbNumber, layoutParams);
+                addView(thumbNumber, layoutParams);//第二个参数 让数字连击始终保持在最上层
             }
             thumbNumber.setNumber(currentNumber);
+        }
+    }
+
+    @Override
+    public void onAnimationEmojiEnd() {
+        if (thumbNumber != null) {
+            removeView(thumbNumber);
+            thumbNumber = null;
         }
     }
 }

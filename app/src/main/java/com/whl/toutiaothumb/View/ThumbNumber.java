@@ -16,6 +16,9 @@ import androidx.annotation.Nullable;
 class ThumbNumber extends View {
     private Paint textPaint;
     private int number;
+    public static final int TEXT_SIZE = 80;
+    public static final int STROKE_WIDTH = 10;
+
 
     public ThumbNumber(Context context) {
         this(context, null);
@@ -37,9 +40,9 @@ class ThumbNumber extends View {
     private void init() {
         textPaint = new Paint();
         textPaint.setColor(Color.RED);
-        textPaint.setTextSize(50);
+        textPaint.setTextSize(TEXT_SIZE);
         textPaint.setTextAlign(Paint.Align.LEFT);
-        textPaint.setStrokeWidth(5);
+        textPaint.setStrokeWidth(STROKE_WIDTH);
     }
 
     @Override
@@ -60,7 +63,7 @@ class ThumbNumber extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        canvas.drawText(number + "", 40, 50, textPaint);
+        canvas.drawText(number + "鼓励", 40, 90, textPaint);//这里的坐标位置原理值得深究
     }
 
     public void setNumber(int number) {
