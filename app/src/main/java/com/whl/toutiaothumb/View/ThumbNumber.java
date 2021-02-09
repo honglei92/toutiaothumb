@@ -5,8 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.Shader;
+import android.graphics.Typeface;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
@@ -22,7 +25,7 @@ import com.whl.toutiaothumb.R;
 class ThumbNumber extends View {
     private Paint textPaint;
     private int number;
-    public static final int TEXT_SIZE = 80;
+    public static final int TEXT_SIZE = 100;
     public static final int STROKE_WIDTH = 10;
     private Bitmap mTalk1;
     private Bitmap mTalk2;
@@ -55,6 +58,9 @@ class ThumbNumber extends View {
         textPaint.setTextSize(TEXT_SIZE);
         textPaint.setTextAlign(Paint.Align.LEFT);
         textPaint.setStrokeWidth(STROKE_WIDTH);
+        textPaint.setTypeface(Typeface.DEFAULT_BOLD);
+
+
         BitmapFactory.Options opt = new BitmapFactory.Options();
         opt.inScaled = true;
         opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
@@ -72,6 +78,10 @@ class ThumbNumber extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         textWidth = (int) textPaint.measureText(number + "");
         imageWidth = bitmapTalk.getWidth();
+        LinearGradient mLinearGradient = new LinearGradient(0, 0, 0, 90f,
+                new int[]{0xFFFf0000, 0xFFCC6B2E},
+                null, Shader.TileMode.CLAMP);
+        textPaint.setShader(mLinearGradient);
         Log.i("tag", textWidth + ";;;onMeasure" + imageWidth);
 //        setMeasuredDimension(textWidth + imageWidth, 90);
     }
@@ -94,10 +104,10 @@ class ThumbNumber extends View {
         super.onDraw(canvas);
         canvas.drawText(number + "", 40, 90, textPaint);//这里的坐标位置原理值得深究
         Rect dst = new Rect();
-        dst.left = 40 + textWidth;
-        dst.top = 20;
-        dst.right = 40 + textWidth + imageWidth;
-        dst.bottom = 95;
+        dst.left = 60 + textWidth;
+        dst.top = 40;
+        dst.right = 60 + textWidth + imageWidth;
+        dst.bottom = 115;
         canvas.drawBitmap(bitmapTalk, null, dst, textPaint);//这里的坐标位置原理值得深究
 
     }

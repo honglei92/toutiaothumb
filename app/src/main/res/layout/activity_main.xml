@@ -10,7 +10,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="350dp"
         android:layout_gravity="center_vertical"
         android:background="#22999999"
         android:orientation="horizontal">
@@ -22,7 +22,9 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="一条精彩评论\n一条精彩评论\n一条精彩评论\n一条精彩评论\n" />
+                android:padding="20dp"
+                android:text="第四种，也是最高层次的阅读，我们称之为主题阅读（syntopical reading）。这是所有阅读中最复杂也最系统化的阅读。对阅读者来说，要求也非常多，就算他所阅读的是一本很简单、很容易懂的书也一样。
+也可以用另外的名称来形容这样的阅读，如比较阅读（comparative reading）。在做主题阅读时，阅读者会读很多书，而不是一本书，并列举出这些书之间相关之处，提出一个所有的书都谈到的主题。但只是书本字里行间的比较还不够。主题阅读涉及的远不止此。借助他所阅读的书籍，主题阅读者要能够架构出一个可能在哪一本书里都没提过的主题分析。因此，很显然的，主题阅读是最主动、也最花力气的一种阅读。" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -56,7 +58,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:layout_gravity="center_vertical"
         android:background="#22999999"
@@ -65,11 +67,6 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="一条精彩评论\n一条精彩评论\n一条精彩评论\n一条精彩评论\n" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -82,7 +79,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:text="成都人民出版社出版成都人民出版社出版" />
+                    android:paddingLeft="20dp"
+                    android:text="写评论..." />
 
                 <View
                     android:layout_width="0dp"
@@ -94,7 +92,7 @@
                     android:layout_width="30dp"
                     android:layout_height="30dp"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginRight="100dp"
+                    android:layout_marginRight="120dp"
                     android:src="@drawable/thumb" />
             </LinearLayout>
 
