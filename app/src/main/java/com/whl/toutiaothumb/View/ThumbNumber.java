@@ -69,24 +69,24 @@ class ThumbNumber extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         textWidth = (int) textPaint.measureText(number + "");
-        imageWidth = bitmapTalk.getWidth() * 2;
-        Log.i("tag", textWidth + ";;;" + imageWidth);
-        setMeasuredDimension(textWidth + imageWidth, 90);
+        imageWidth = bitmapTalk.getWidth();
+        Log.i("tag", textWidth + ";;;onMeasure" + imageWidth);
+//        setMeasuredDimension(textWidth + imageWidth, 90);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-//        super.onLayout(changed, left, top, right, bottom);
-        super.onLayout(true, 0, 0, textWidth + imageWidth, 90);
-        Log.i("tag", textWidth + imageWidth + "onLayout;;;" );
+        super.onLayout(changed, left, top, right, bottom);
+//        super.onLayout(true, 0, 0, textWidth + imageWidth, 90);
+        Log.i("tag", textWidth + imageWidth + "onLayout;;;");
     }
 
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(imageWidth + textWidth, h, oldw, oldh);
-        Log.i("tag", textWidth + imageWidth + "onSizeChanged;;;" );
+        Log.i("tag", textWidth + imageWidth + "onSizeChanged;;;");
     }
 
     @Override
@@ -111,6 +111,7 @@ class ThumbNumber extends View {
         } else {
             bitmapTalk = mTalk3;
         }
+        requestLayout();// 他跟invalidate()相反，他只调用measure()和layout()过程，不会调用draw()。
         invalidate();
     }
 }
