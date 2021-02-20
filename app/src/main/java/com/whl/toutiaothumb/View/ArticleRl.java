@@ -56,11 +56,11 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
         for (int i = 0; i < 5; i++) {
             LayoutParams layoutParams = new LayoutParams(100, 100);
             //获取屏幕尺寸
-            DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+           /* DisplayMetrics metrics = context.getResources().getDisplayMetrics();
             int screenWidth = metrics.widthPixels;
-            int screenHeight = metrics.heightPixels;
+            int screenHeight = metrics.heightPixels;*/
 
-            layoutParams.setMargins((int) x, (int) y, 0, 0);
+            layoutParams.setMargins((int) x, (int) y - 50, 0, 0);
             ThumbEmoji articleThumb = new ThumbEmoji(context);
             articleThumb.setEmojiType(list.get(i));
             articleThumb.setmAnimatorListener(animatorListener);
@@ -72,13 +72,13 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
         super(context, attrs, defStyleAttr, defStyleRes);
     }
 
-    public void setThumb(boolean isThumb, float x, float y, ArticleRl articleThumbRl) {
+    public void setThumb(float x, float y, ArticleRl articleThumbRl) {
         if (mMediaPlayer.isPlaying()) {
             mMediaPlayer.seekTo(0);//重复点击时，从头开始播放
         } else {
             mMediaPlayer.start();
         }
-        if (System.currentTimeMillis() - lastClickTime > 800) {
+        if (System.currentTimeMillis() - lastClickTime > 800) {//单次点击
             addThumbImage(mContext, x, y, this);
             lastClickTime = System.currentTimeMillis();
             for (int i = getChildCount() - 5; i < getChildCount(); i++) {
@@ -91,7 +91,7 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
                 removeView(thumbNumber);
                 thumbNumber = null;
             }
-        } else {
+        } else {//连续点击
             lastClickTime = System.currentTimeMillis();
             Log.i(TAG, "当前动画化正在执行");
             addThumbImage(mContext, x, y, this);
@@ -104,7 +104,7 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
             //添加数字连击view
             LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-            layoutParams.setMargins(600, (int) (y) - 300, 0, 150);
+            layoutParams.setMargins((int)x - 300, (int) (y) - 300, 0, 150);
             if (thumbNumber == null) {
                 thumbNumber = new ThumbNumber(mContext);
                 addView(thumbNumber, layoutParams);//第二个参数 让数字连击始终保持在最上层

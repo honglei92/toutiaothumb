@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void run() {
             articleThumbRl.setVisibility(View.VISIBLE);
-            articleThumbRl.setThumb(true, x, y, articleThumbRl);
+            articleThumbRl.setThumb(x, y, articleThumbRl);
             handler.postDelayed(mLongPressed, 100);
         }
     };
@@ -36,30 +36,30 @@ public class MainActivity extends AppCompatActivity {
         ivThumb = findViewById(R.id.ivThumb);
         ivThumbBottom = findViewById(R.id.ivThumbBottom);
         articleThumbRl = findViewById(R.id.articleThumbRl);
-        ivThumb.setOnClickListener(new View.OnClickListener() {
+        ivThumb.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(View v) {
-                int[] location = new int[2];
-                v.getLocationInWindow(location);
-                int x = location[0]; // view距离window 左边的距离（即x轴方向）
-                int y = location[1]; // view距离window 顶边的距离（即y轴方向）
-                articleThumbRl.setVisibility(View.VISIBLE);
-                articleThumbRl.setThumb(true, x, y, articleThumbRl);
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    lastDownTime = System.currentTimeMillis();
+                    x = (int) event.getRawX();
+                    y = (int) event.getRawY();
+                    Log.i("aaa", (System.currentTimeMillis() - lastDownTime) + "");
+                    handler.postDelayed(mLongPressed, 100);
+                }
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    Log.i("aaa", (System.currentTimeMillis() - lastDownTime) + "");
+                    if (System.currentTimeMillis() - lastDownTime < 100) {//判断为单击事件
+                        articleThumbRl.setVisibility(View.VISIBLE);
+                        articleThumbRl.setThumb(x, y, articleThumbRl);
+                        handler.removeCallbacks(mLongPressed);
+                    } else {//判断为长按事件后松开
+                        handler.removeCallbacks(mLongPressed);
+                    }
+                }
+                return true;
             }
         });
-/*
-        ivThumbBottom.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int[] location = new int[2];
-                v.getLocationInWindow(location);
-                int x = location[0]; // view距离window 左边的距离（即x轴方向）
-                int y = location[1]; // view距离window 顶边的距离（即y轴方向）
-                articleThumbRl.setVisibility(View.VISIBLE);
-                articleThumbRl.setThumb(true, x, y, articleThumbRl);
-            }
-        });
-*/
+
         ivThumbBottom.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("aaa", (System.currentTimeMillis() - lastDownTime) + "");
                     if (System.currentTimeMillis() - lastDownTime < 100) {//判断为单击事件
                         articleThumbRl.setVisibility(View.VISIBLE);
-                        articleThumbRl.setThumb(true, x, y, articleThumbRl);
+                        articleThumbRl.setThumb(x, y, articleThumbRl);
                         handler.removeCallbacks(mLongPressed);
                     } else {//判断为长按事件后松开
                         handler.removeCallbacks(mLongPressed);

@@ -3,10 +3,12 @@ package com.whl.toutiaothumb.View;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Parcelable;
@@ -35,15 +37,9 @@ public class ThumbEmoji extends View implements View.OnClickListener {
     private Context mContext;
     private int emojiType;
     private AnimatorListener mAnimatorListener;
+    private int rightLength;
+    private int bottomLength;
 
-    public int getEmojiType() {
-        return emojiType;
-    }
-
-    public void setEmojiType(int emojiType) {
-        this.emojiType = emojiType;
-        init();
-    }
 
     public ThumbEmoji(Context context) {
         this(context, null);
@@ -98,9 +94,22 @@ public class ThumbEmoji extends View implements View.OnClickListener {
                 0, topY);
         translateAnimationY.setDuration(DURATION);
         translateAnimationY.setInterpolator(new DecelerateInterpolator());
+        //表情图片的大小变化
+        ObjectAnimator translateAnimationRightLength = ObjectAnimator.ofInt(this, "rightLength",
+                0, 100, 100, 100, 100, 100);
+        translateAnimationRightLength.setDuration(DURATION);
+        ObjectAnimator translateAnimationBottomLength = ObjectAnimator.ofInt(this, "bottomLength",
+                0, 100, 100, 100, 100, 100);
+        translateAnimationBottomLength.setDuration(DURATION);
+        translateAnimationRightLength.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                invalidate();//ondraw会在什么情况下执行?
+            }
+        });
         //动画集合
         AnimatorSet animatorSet = new AnimatorSet();
-        animatorSet.play(translateAnimationX).with(translateAnimationY);
+        animatorSet.play(translateAnimationX).with(translateAnimationY).with(translateAnimationRightLength).with(translateAnimationBottomLength);
 
         //下降动画
         //抛物线动画，原理：两个位移动画，一个横向匀速移动，一个纵向变速移动，两个动画同时执行，就有了抛物线的效果。
@@ -195,8 +204,9 @@ public class ThumbEmoji extends View implements View.OnClickListener {
         Rect dst = new Rect();
         dst.left = 0;
         dst.top = 0;
-        dst.right = 100;
-        dst.bottom = 100;
+        dst.right = rightLength;
+        dst.bottom = bottomLength;
+        Log.i(TAG, "rightLength" + rightLength + ",bottomLength" + bottomLength);
         canvas.drawBitmap(mThumbImage, null, dst, mBitmapPaint);
     }
 
@@ -208,7 +218,36 @@ public class ThumbEmoji extends View implements View.OnClickListener {
         this.mAnimatorListener = animatorListener;
     }
 
+    public void setmRight(int mRight) {
+        this.rightLength = mRight;
+    }
+
     public interface AnimatorListener {
         void onAnimationEmojiEnd();
+    }
+
+    public int getRightLength() {
+        return rightLength;
+    }
+
+    public void setRightLength(int rightLength) {
+        this.rightLength = rightLength;
+    }
+
+    public int getBottomLength() {
+        return bottomLength;
+    }
+
+    public void setBottomLength(int bottomLength) {
+        this.bottomLength = bottomLength;
+    }
+
+    public int getEmojiType() {
+        return emojiType;
+    }
+
+    public void setEmojiType(int emojiType) {
+        this.emojiType = emojiType;
+        init();
     }
 }
