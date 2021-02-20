@@ -107,7 +107,7 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
             layoutParams.setMargins((int)x - 300, (int) (y) - 300, 0, 150);
             if (thumbNumber == null) {
                 thumbNumber = new ThumbNumber(mContext);
-                addView(thumbNumber, layoutParams);//第二个参数 让数字连击始终保持在最上层
+                addView(thumbNumber, layoutParams);
             }
             thumbNumber.setNumber(currentNumber);
         }
