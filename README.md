@@ -1,6 +1,8 @@
 # toutiaothumb
 仿写今日头条评论点赞效果
-博客链接：https://blog.csdn.net/wanghonglei01/article/details/113843317?spm=1001.2014.3001.5501
+
+博客链接：
+https://blog.csdn.net/wanghonglei01/article/details/113843317?spm=1001.2014.3001.5501
 
 头条效果:                      我的效果：
 
