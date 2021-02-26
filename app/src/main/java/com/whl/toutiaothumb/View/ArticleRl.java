@@ -44,7 +44,7 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
     }
 
     private void init(Context context) {
-        mMediaPlayer = MediaPlayer.create(context, R.raw.thumb);
+        mMediaPlayer = MediaPlayer.create(context, R.raw.ding);
     }
 
     private void addThumbImage(Context context, float x, float y, ThumbEmoji.AnimatorListener animatorListener) {
@@ -74,9 +74,10 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
 
     public void setThumb(float x, float y, ArticleRl articleThumbRl) {
         if (mMediaPlayer.isPlaying()) {
-            mMediaPlayer.seekTo(0);//重复点击时，从头开始播放
+            mMediaPlayer.seekTo(700);//重复点击时，从头开始播放
         } else {
             mMediaPlayer.start();
+            mMediaPlayer.seekTo(500);
         }
         if (System.currentTimeMillis() - lastClickTime > 800) {//单次点击
             addThumbImage(mContext, x, y, this);
@@ -104,7 +105,7 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
             //添加数字连击view
             LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
             DisplayMetrics metrics = mContext.getResources().getDisplayMetrics();
-            layoutParams.setMargins((int)x - 300, (int) (y) - 300, 0, 150);
+            layoutParams.setMargins((int) x - 300, (int) (y) - 300, 0, 150);
             if (thumbNumber == null) {
                 thumbNumber = new ThumbNumber(mContext);
                 addView(thumbNumber, layoutParams);
