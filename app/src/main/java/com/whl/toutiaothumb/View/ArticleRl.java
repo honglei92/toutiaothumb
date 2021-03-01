@@ -55,16 +55,15 @@ public class ArticleRl extends RelativeLayout implements ThumbEmoji.AnimatorList
         Collections.shuffle(list);//打乱顺序
         for (int i = 0; i < 5; i++) {
             LayoutParams layoutParams = new LayoutParams(100, 100);
-            //获取屏幕尺寸
-           /* DisplayMetrics metrics = context.getResources().getDisplayMetrics();
-            int screenWidth = metrics.widthPixels;
-            int screenHeight = metrics.heightPixels;*/
-
             layoutParams.setMargins((int) x, (int) y - 50, 0, 0);
             ThumbEmoji articleThumb = new ThumbEmoji(context);
             articleThumb.setEmojiType(list.get(i));
             articleThumb.setmAnimatorListener(animatorListener);
-            this.addView(articleThumb, -1, layoutParams);
+            if (getChildCount() > 1)
+                this.addView(articleThumb, getChildCount() - 1, layoutParams);
+            else {
+                this.addView(articleThumb, layoutParams);
+            }
         }
     }
 

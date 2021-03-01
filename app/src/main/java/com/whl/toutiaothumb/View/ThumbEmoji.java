@@ -27,7 +27,7 @@ import com.whl.toutiaothumb.R;
  * author  honglei92
  * date    2021/1/9
  */
-public class ThumbEmoji extends View implements View.OnClickListener {
+public class ThumbEmoji extends View  {
     private static final String TAG = "ArticleThumb";
     public static final int DURATION = 600;
     public static final int[] emojiArray = {R.drawable.emoji1, R.drawable.emoji2, R.drawable.emoji3, R.drawable.emoji4,
@@ -69,15 +69,9 @@ public class ThumbEmoji extends View implements View.OnClickListener {
         opt.inPreferredConfig = Bitmap.Config.ARGB_8888;
         mThumbImage = BitmapFactory.decodeResource(getResources(), emojiArray[emojiType], opt).copy(Bitmap.Config.ARGB_8888, true);
         mThumbImage.setDensity(getResources().getDisplayMetrics().densityDpi);
-        setOnClickListener(this);
     }
 
     private void initSize() {
-    }
-
-    @Override
-    public void onClick(View v) {
-        Log.i(TAG, "点击了");
     }
 
     private void showThumbDownAni(ArticleRl articleThumbRl) {

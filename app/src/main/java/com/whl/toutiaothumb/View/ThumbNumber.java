@@ -24,6 +24,7 @@ import com.whl.toutiaothumb.R;
  */
 class ThumbNumber extends View {
     private Paint textPaint;
+    private Paint textPaintStroke;
     private int number;
     public static final int TEXT_SIZE = 100;
     public static final int STROKE_WIDTH = 10;
@@ -54,11 +55,24 @@ class ThumbNumber extends View {
 
     private void init() {
         textPaint = new Paint();
-        textPaint.setColor(Color.RED);
         textPaint.setTextSize(TEXT_SIZE);
         textPaint.setTextAlign(Paint.Align.LEFT);
         textPaint.setStrokeWidth(STROKE_WIDTH);
+        textPaint.setStyle(Paint.Style.FILL);
         textPaint.setTypeface(Typeface.DEFAULT_BOLD);
+        //这里为了做成上面和下面颜色各一半
+        LinearGradient mLinearGradient = new LinearGradient(0, 0, 0, 90f,
+                new int[]{0xFFFF9641, 0xFFFF9641, 0xFFFF9641, 0xFFFF9641, 0xFFff0000, 0xFFff0000},
+                null, Shader.TileMode.CLAMP);
+        textPaint.setShader(mLinearGradient);
+        //描边画笔
+        textPaintStroke = new Paint();
+        textPaintStroke.setColor(Color.BLACK);
+        textPaintStroke.setTextSize(TEXT_SIZE);
+        textPaintStroke.setTextAlign(Paint.Align.LEFT);
+        textPaintStroke.setStrokeWidth(4);
+        textPaintStroke.setStyle(Paint.Style.STROKE);
+        textPaintStroke.setTypeface(Typeface.DEFAULT_BOLD);
 
 
         BitmapFactory.Options opt = new BitmapFactory.Options();
@@ -78,10 +92,6 @@ class ThumbNumber extends View {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         textWidth = (int) textPaint.measureText(number + "");
         imageWidth = bitmapTalk.getWidth();
-        LinearGradient mLinearGradient = new LinearGradient(0, 0, 0, 90f,
-                new int[]{0xFFFf0000, 0xFFCC6B2E},
-                null, Shader.TileMode.CLAMP);
-        textPaint.setShader(mLinearGradient);
         Log.i("tag", textWidth + ";;;onMeasure" + imageWidth);
 //        setMeasuredDimension(textWidth + imageWidth, 90);
     }
@@ -103,6 +113,7 @@ class ThumbNumber extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawText(number + "", 40, 90, textPaint);//这里的坐标位置原理值得深究
+        canvas.drawText(number + "", 40, 90, textPaintStroke);//这里的坐标位置原理值得深究
         Rect dst = new Rect();
         dst.left = 60 + textWidth;
         dst.top = 40;
