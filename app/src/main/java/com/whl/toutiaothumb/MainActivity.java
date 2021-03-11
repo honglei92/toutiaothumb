@@ -1,5 +1,8 @@
 package com.whl.toutiaothumb;
 
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -12,10 +15,12 @@ import android.widget.ImageView;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.whl.toutiaothumb.View.ArticleRl;
+import com.whl.toutiaothumb.love.Love;
 
 public class MainActivity extends AppCompatActivity {
     private ImageView ivThumb, ivThumbBottom;
     private ArticleRl articleThumbRl;
+    private Love mLove;
     final Handler handler = new Handler();
     final Runnable mLongPressed = new Runnable() {
         @Override
@@ -32,6 +37,12 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+       /* Paint paint = new Paint();
+        ColorMatrix cm = new ColorMatrix();
+        cm.setSaturation(0f);
+        paint.setColorFilter(new ColorMatrixColorFilter(cm));
+        getWindow().getDecorView().setLayerType(View.LAYER_TYPE_HARDWARE, paint);*/
         setContentView(R.layout.activity_main);
         ivThumb = findViewById(R.id.ivThumb);
         ivThumbBottom = findViewById(R.id.ivThumbBottom);
@@ -81,6 +92,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
                 return true;
+            }
+        });
+        //爱心发射
+        mLove = findViewById(R.id.love);
+        mLove.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mLove.Onclick();
             }
         });
     }

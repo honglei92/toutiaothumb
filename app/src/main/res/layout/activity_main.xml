@@ -9,6 +9,7 @@
 
 
     <LinearLayout
+        android:id="@+id/llTopThumb"
         android:layout_width="match_parent"
         android:layout_height="350dp"
         android:layout_gravity="center_vertical"
@@ -55,6 +56,14 @@
 
         </RelativeLayout>
     </LinearLayout>
+
+    <com.whl.toutiaothumb.love.Love
+        android:id="@+id/love"
+        android:layout_width="240px"
+        android:layout_height="240px"
+        android:layout_below="@id/llTopThumb"
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
