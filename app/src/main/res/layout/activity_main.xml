@@ -59,8 +59,8 @@
 
     <com.whl.toutiaothumb.love.Love
         android:id="@+id/love"
-        android:layout_width="240px"
-        android:layout_height="240px"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_below="@id/llTopThumb"
         android:layout_alignParentRight="true"
         android:layout_margin="20dp" />

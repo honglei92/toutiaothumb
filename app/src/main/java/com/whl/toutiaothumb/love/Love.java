@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -34,8 +33,9 @@ public class Love extends View {
     private Paint mCirclePaint;
     private Paint mSmallCirclePaint;
     private static int WIDTH = 200;//view宽度的6/5
+    private static int HALF_VIEW_WIDTH = 120;//整个view宽度的一半
     private static final int TIME = 1000;
-    private float smallCircleRadius = 10;
+    private float smallCircleRadius = 6;
 
     public float getSmallCircleScale() {
         return smallCircleScale;
@@ -84,7 +84,7 @@ public class Love extends View {
         this.locationX = locationX;
     }
 
-    private int locationX = WIDTH / 10;
+    private int locationX;
 
     public Love(Context context) {
         this(context, null);
@@ -141,8 +141,10 @@ public class Love extends View {
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         Log.i(TAG, getWidth() + "---" + getMeasuredWidth());
-//        WIDTH = getMeasuredWidth();
+        WIDTH = (int) (getMeasuredWidth() / 6f * 5);
+        HALF_VIEW_WIDTH = (int) (getMeasuredWidth() / 2f);
         rightLength = bottomLength = WIDTH;
+        locationX = WIDTH / 10;
     }
 
     @Override
@@ -153,37 +155,63 @@ public class Love extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        if (checked) {
+            currentBitmap = mLove;
+        } else {
+            currentBitmap = mLoveUnSelect;
+        }
         Rect dst = new Rect();
         dst.left = locationX;
         dst.top = locationX;
         dst.right = rightLength + locationX;
         dst.bottom = rightLength + locationX;
         canvas.drawBitmap(currentBitmap, null, dst, mPaint);
-        if (radius <= 120) {
+        if (radius <= HALF_VIEW_WIDTH) {
             canvas.drawCircle(WIDTH / 5 * 3, WIDTH / 5 * 3, radius, mCirclePaint);
         }
-        float sin30 = (float) (120 * Math.sin(Math.PI * 30d / 180)) * smallCircleScale;
-        float sin60 = (float) (120 * Math.sin(Math.PI * 60d / 180)) * smallCircleScale;
+        float sin30 = (float) (HALF_VIEW_WIDTH * Math.sin(Math.PI * 30d / 180)) * smallCircleScale;
+        float sin60 = (float) (HALF_VIEW_WIDTH * Math.sin(Math.PI * 60d / 180)) * smallCircleScale;
         if (smallCircleScale < 1.1 && smallCircleScale != 0.5) {
-            canvas.drawCircle(120, 120 - 100 * smallCircleScale, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
-            canvas.drawCircle(120 + sin60, 120 - sin30, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
-            canvas.drawCircle(120 + sin60, 120 + sin30, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
-            canvas.drawCircle(120 - sin60, 120 - sin30, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
-            canvas.drawCircle(120 - sin60, 120 + sin30, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
-            canvas.drawCircle(120, 120 + 100 * smallCircleScale, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
+            canvas.drawCircle(HALF_VIEW_WIDTH, HALF_VIEW_WIDTH - WIDTH / 2 * smallCircleScale, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
+            canvas.drawCircle(HALF_VIEW_WIDTH + sin60, HALF_VIEW_WIDTH - sin30, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
+            canvas.drawCircle(HALF_VIEW_WIDTH + sin60, HALF_VIEW_WIDTH + sin30, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
+            canvas.drawCircle(HALF_VIEW_WIDTH - sin60, HALF_VIEW_WIDTH - sin30, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
+            canvas.drawCircle(HALF_VIEW_WIDTH - sin60, HALF_VIEW_WIDTH + sin30, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
+            canvas.drawCircle(HALF_VIEW_WIDTH, HALF_VIEW_WIDTH + WIDTH / 2 * smallCircleScale, smallCircleRadius * smallCircleScale, mSmallCirclePaint);
         }
     }
 
     public void Onclick() {
-        if (checked) {
-            currentBitmap = mLove;
+        if (!checked) {
             invalidate();
             handleLike();
         } else {
-            currentBitmap = mLoveUnSelect;
             invalidate();
+            handleUnLike();
         }
         checked = !checked;
+    }
+
+    private void handleUnLike() {
+        int time = 300;
+        ObjectAnimator scaleAni = ObjectAnimator.ofInt(this, "rightLength",
+                WIDTH, WIDTH * 4 / 5, WIDTH);
+        scaleAni.setDuration(time);
+        ObjectAnimator scaleAniY = ObjectAnimator.ofInt(this, "bottomLength",
+                WIDTH, WIDTH * 4 / 5, WIDTH);
+        scaleAniY.setDuration(time);
+        ObjectAnimator moveX = ObjectAnimator.ofInt(this, "locationX",
+                WIDTH / 10, WIDTH / 10 + WIDTH / 10, WIDTH / 10);
+        moveX.setDuration(time);
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.play(scaleAni).with(scaleAniY).with(moveX);
+        moveX.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                invalidate();
+            }
+        });
+        animatorSet.start();
     }
 
     private void handleLike() {
@@ -194,7 +222,7 @@ public class Love extends View {
                 WIDTH, 0, WIDTH * 6 / 5, WIDTH);
         scaleAniY.setDuration(TIME);
         ObjectAnimator moveX = ObjectAnimator.ofInt(this, "locationX",
-                20, 120, 0, 20);
+                WIDTH / 10, HALF_VIEW_WIDTH, 0, WIDTH / 10);
         moveX.setDuration(TIME);
         AnimatorSet animatorSet = new AnimatorSet();
         animatorSet.play(scaleAni).with(scaleAniY).with(moveX);
@@ -235,7 +263,7 @@ public class Love extends View {
 
         //圆环和原点发射
         ObjectAnimator radiusAni = ObjectAnimator.ofFloat(this, "radius",
-                0, 0, 0, 0, 60, 118);
+                0, 0, 0, 0, HALF_VIEW_WIDTH / 2, HALF_VIEW_WIDTH - 2);
         radiusAni.setDuration(TIME / 4 * 3);
         ObjectAnimator smallAni = ObjectAnimator.ofFloat(this, "smallCircleScale",
                 0f, 0f, 0f, 0f, 0.5f, 1.1f);
@@ -250,5 +278,6 @@ public class Love extends View {
 
     public void setChecked(boolean checked) {
         this.checked = checked;
+        invalidate();
     }
 }

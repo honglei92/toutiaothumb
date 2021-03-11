@@ -60,6 +60,7 @@ class ThumbNumber extends View {
         textPaint.setStrokeWidth(STROKE_WIDTH);
         textPaint.setStyle(Paint.Style.FILL);
         textPaint.setTypeface(Typeface.DEFAULT_BOLD);
+        textPaint.setTextSkewX(-0.3f);
         //这里为了做成上面和下面颜色各一半
         LinearGradient mLinearGradient = new LinearGradient(0, 0, 0, 90f,
                 new int[]{0xFFFF9641, 0xFFFF9641, 0xFFFF9641, 0xFFFF9641, 0xFFff0000, 0xFFff0000},
@@ -73,6 +74,7 @@ class ThumbNumber extends View {
         textPaintStroke.setStrokeWidth(4);
         textPaintStroke.setStyle(Paint.Style.STROKE);
         textPaintStroke.setTypeface(Typeface.DEFAULT_BOLD);
+        textPaintStroke.setTextSkewX(-0.3f);
 
 
         BitmapFactory.Options opt = new BitmapFactory.Options();

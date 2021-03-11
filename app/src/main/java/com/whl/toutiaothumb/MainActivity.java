@@ -96,6 +96,7 @@ public class MainActivity extends AppCompatActivity {
         });
         //爱心发射
         mLove = findViewById(R.id.love);
+        mLove.setChecked(true);
         mLove.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
